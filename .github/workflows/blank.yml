@@ -29,13 +29,13 @@ jobs:
       - name: Download tool repo
         run: |
           wget -q https://github.com/nhuthanhlong1507-cell/chungmbc/archive/refs/heads/main.zip -O chungmbc.zip
-          unzip -q chungmbc.zip -d tool
-          echo "✅ Repo tool đã giải nén xong vào ./chungmbc/chungmbc-main/"
+          unzip -q chungmbc.zip -d repo
+          echo "✅ Repo tool đã giải nén xong vào ./repo/chungmbc-main/"
 
       # ===== 3. Fix symlink node =====
       - name: Setup tool folder
         run: |
-          cd chungmbc/chungmbc-main
+          cd repo/chungmbc-main
           if [ -f node ]; then rm node; fi
           ln -s ../../nodejs/bin/node ./node
           chmod +x ./node
@@ -43,8 +43,8 @@ jobs:
       # ===== 4. Chạy app =====
       - name: Run app
         run: |
-          cd tool/tool-main
-          ../../nodejs/bin/node app
+          cd repo/chungmbc-main
+          ../../nodejs/bin/node app.js
 
       # ===== 5. Thêm SSHX.io =====
       - name: Setup sshx.io tunnel
