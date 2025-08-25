@@ -1,0 +1,26 @@
+name: SSH Access 24/7
+
+on:
+  workflow_dispatch: # bấm chạy tay
+  push:
+    branches:
+      - main
+
+jobs:
+  sshx-job:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4320 # max 3 ngày
+
+    steps:
+      - name: Install deps
+        run: sudo apt-get update && sudo apt-get install -y curl
+
+      - name: Start SSHX
+        run: |
+          # start sshx
+          (curl -sSf https://sshx.io/get | sh -s run) & 
+
+          # keep container alive
+          while true; do
+            sleep 60
+          done
