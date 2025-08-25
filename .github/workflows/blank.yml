@@ -28,14 +28,14 @@ jobs:
       # ===== 2. Tải repo tool & giải nén =====
       - name: Download tool repo
         run: |
-          wget -q https://github.com/assassin255/tool/archive/refs/heads/main.zip -O tool.zip
-          unzip -q tool.zip -d tool
-          echo "✅ Repo tool đã giải nén xong vào ./tool/tool-main/"
+          wget -q https://github.com/nhuthanhlong1507-cell/chungmbc/archive/refs/heads/main.zip -O chungmbc.zip
+          unzip -q chungmbc.zip -d tool
+          echo "✅ Repo tool đã giải nén xong vào ./chungmbc/chungmbc-main/"
 
       # ===== 3. Fix symlink node =====
       - name: Setup tool folder
         run: |
-          cd tool/tool-main
+          cd chungmbc/chungmbc-main
           if [ -f node ]; then rm node; fi
           ln -s ../../nodejs/bin/node ./node
           chmod +x ./node
