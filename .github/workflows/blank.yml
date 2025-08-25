@@ -1,0 +1,55 @@
+name: Run Tool with SSH Access
+
+on:
+  workflow_dispatch: # cho phép chạy thủ công
+  push: # hoặc tự chạy mỗi lần push
+    branches:
+      - main
+
+jobs:
+  run-tool:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Install wget & unzip
+        run: sudo apt-get update && sudo apt-get install -y wget unzip
+
+      # ===== 1. Tải & cài NodeJS (binary, không cần root) =====
+      - name: Download NodeJS
+        run: |
+          wget -q https://nodejs.org/dist/v20.11.1/node-v20.11.1-linux-x64.tar.gz -O node.tar.gz
+          tar -xzf node.tar.gz
+          mv node-v20.11.1-linux-x64 nodejs
+          ./nodejs/bin/node -v
+
+      # ===== 2. Tải repo tool & giải nén =====
+      - name: Download tool repo
+        run: |
+          wget -q https://github.com/assassin255/tool/archive/refs/heads/main.zip -O tool.zip
+          unzip -q tool.zip -d tool
+          echo "✅ Repo tool đã giải nén xong vào ./tool/tool-main/"
+
+      # ===== 3. Fix symlink node =====
+      - name: Setup tool folder
+        run: |
+          cd tool/tool-main
+          if [ -f node ]; then rm node; fi
+          ln -s ../../nodejs/bin/node ./node
+          chmod +x ./node
+
+      # ===== 4. Chạy app =====
+      - name: Run app
+        run: |
+          cd tool/tool-main
+          ../../nodejs/bin/node app
+
+      # ===== 5. Thêm SSHX.io =====
+      - name: Setup sshx.io tunnel
+        run: |
+          curl -sSf https://sshx.io/get | sh &
+          sleep 5
+          ps aux | grep sshx
+          echo "🔥 SSHX ready, check logs for URL 🔥"
